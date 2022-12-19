@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>The iraceplot package</title>
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">The iraceplot package</h1>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The iraceplot package provides a set of functions to create plots to visualize the configuration data generated by the configuration process implemented in the irace package.</p>
+<p>The configuration process performed by irace will show ar the end of the execution one or more configurations that are the best performing configurations found. This package provides a set of functions that allow to further assess the performance of these configurations and provides support to obtain insights about the details of the configuration process.</p>
+<p>For more details about these functions, please check the <a href="https://auto-optimization.github.io/iraceplot/">user guide</a> of the package and the documentation of the functions implemented in the package.</p>
+</div>
+<div id="installation" class="section level1">
+<h1>Installation</h1>
+<div id="install-iraceplot" class="section level2">
+<h2>Install iraceplot</h2>
+<p>You can install the package directly from CRAN</p>
+<pre><code>install.packages(&quot;iraceplot&quot;)</code></pre>
+<p>or you can install the last development version from Github:</p>
+<pre><code>install.packages(&quot;devtools&quot;)
+devtools::install_github(&quot;auto-optimization/iraceplot/&quot;)</code></pre>
+</div>
+<div id="how-to-use" class="section level2">
+<h2>How to use</h2>
+<p>This is a basic example that shows how to use iraceplot:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">library</span>(iraceplot)</a></code></pre></div>
+<p>To use the functions its required to have the log file generated by irace (logFile option in the irace package), commonly saved in the in the directory in which irace was executed with the name <code>irace.Rdata</code>. To load the irace log data, replace the path of the file with yours:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">iraceResults &lt;-<span class="st"> </span>irace<span class="op">::</span><span class="kw">read_logfile</span>(<span class="st">&quot;~/path/to/irace.Rdata&quot;</span>)</a></code></pre></div>
+<p>This file contains the <code>iraceResults</code> variable which contains the irace log. For more details about this variable, please go to the documentation of the irace package. Now you can use the the functions of the package, for example:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">boxplot_test</span>(iraceResults, <span class="dt">type=</span><span class="st">&quot;best&quot;</span>)</a></code></pre></div>
+</div>
+<div id="executing-irace" class="section level2">
+<h2>Executing irace</h2>
+<p>To use the methods provided by this package you must have an irace data object, this object is saved as an Rdata file (irace.Rdata by default) after each irace execution.</p>
+<p>During the configuration procedure irace evaluates several candidate configurations (parameter settings) on different training insrances, creating an algorithm performance data set we call the <em>training data set</em>. This information is thus, the data that irace had access to when configuring the algorithm.</p>
+<p>You can also enable the test evaluation option in irace, in which a set of elite configurations will be evaluated on a set of test instances after the execution of irace is finished. Nota that this option is not enabled by default and you must provide the test instances in order to enable it. The performance obtained in this evalaution is called the <em>test data set</em>. This evaluation helps assess the results of the configuration in a more “real” setup. For example, we can assess if the configuration process incurred in overtuning or if a type of instance was underrepresented in the training set. We note that irace allows to perform the test evaluations to the final elite configurations and to the elite configurations of each iterations. For information about the irace setup we refer you to the irace package user guide.</p>
+<p>Note: Before executing irace, consider setting the test evaluation option of irace.</p>
+<p>Once irace is executed, you can load the irace log in the R console as previously shown.</p>
+</div>
+</div>
+<div id="function-overview" class="section level1">
+<h1>Function overview</h1>
+<div id="visualizing-configurations" class="section level2">
+<h2>Visualizing configurations</h2>
+<p>The irace plot package provides several functions that display information about configurations. For visualizing individual configurations the <code>parallel_coord</code> shows each configuration as a line.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">parallel_coord</span>(iraceResults)</a></code></pre></div>
+<p>The <code>parallel_coord2</code> function generates a similar parallel coordinates plot when provided with an arbitrary set of configurations without the irace execution context. For example, to display all elite configurations:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">all_elite &lt;-<span class="st"> </span>iraceResults<span class="op">$</span>allConfigurations[<span class="kw">unlist</span>(iraceResults<span class="op">$</span>allElites),]</a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="kw">parallel_coord2</span>(all_elite, iraceResults<span class="op">$</span>parameters)</a></code></pre></div>
+<p>A similar display can be obtained using the <code>parallel_cat</code> function. For example to visualize the configurations of a selected set of parameters:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">parallel_cat</span>(<span class="dt">irace_results =</span> iraceResults, </a>
+<a class="sourceLine" id="cb8-2" title="2">             <span class="dt">param_names=</span><span class="kw">c</span>(<span class="st">&quot;algorithm&quot;</span>, <span class="st">&quot;localsearch&quot;</span>, <span class="st">&quot;dlb&quot;</span>, <span class="st">&quot;nnls&quot;</span>))</a></code></pre></div>
+<p>The <code>sampling_pie</code> function creates a plot that displays the values of all configurations sampling during the configuration process. The size of each parameter value in the plot is dependent of the number of configurations having that value in the configurations.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">sampling_pie</span>(<span class="dt">irace_results =</span> iraceResults, <span class="dt">param_names=</span><span class="kw">c</span>(<span class="st">&quot;algorithm&quot;</span>, <span class="st">&quot;localsearch&quot;</span>, <span class="st">&quot;alpha&quot;</span>, <span class="st">&quot;beta&quot;</span>, <span class="st">&quot;rho&quot;</span>))</a></code></pre></div>
+<p>Note that for some of the previous plots, numerical parameters domains are discretized to be showm in the plot. Check the documentation of the functions and the <a href="https://auto-optimization.github.io/iraceplot/">user guide</a> to adjust this setting.</p>
+</div>
+<div id="visualising-sampled-values-and-frequencies" class="section level2">
+<h2>Visualising sampled values and frequencies</h2>
+<p>The package provides several functions to visualize values sampled during the configuration procedure and their distributions. These plots can help identifying the areas in the parameter space where irace detected a high performance.</p>
+<p>A general overview of the sampled parameters values can be obtained with the <code>sampling_frequency</code> function which generates frequency and density plots for the sampled values:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"> <span class="kw">sampling_frequency</span>(iraceResults, <span class="dt">param_names =</span> <span class="kw">c</span>(<span class="st">&quot;beta&quot;</span>))</a></code></pre></div>
+<p>If you would like to visualize the distribution of a particular set of configurations, you can pass directly a set of configurations and a parameters object in the irace format to the <code>sampling_frequency</code> function:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"> <span class="kw">sampling_frequency</span>(iraceResults<span class="op">$</span>allConfigurations, iraceResults<span class="op">$</span>parameters, <span class="dt">param_names =</span> <span class="kw">c</span>(<span class="st">&quot;alpha&quot;</span>))</a></code></pre></div>
+<p>A detailed plot showing the sampling by iteration can be obtained with the <code>sampling_frequency_iteration</code> function. This plot shows the convergence of the configuration process reflected in the sampled parameter values.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">sampling_frequency_iteration</span>(iraceResults, <span class="dt">param_name =</span> <span class="st">&quot;beta&quot;</span>)</a></code></pre></div>
+<p>To visualize the joint sampling frequency of two parameters you can use the <code>sampling_heatmap</code> function.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">sampling_heatmap</span>(iraceResults, <span class="dt">param_names =</span> <span class="kw">c</span>(<span class="st">&quot;beta&quot;</span>,<span class="st">&quot;alpha&quot;</span>))</a></code></pre></div>
+<p>The configurations can be provided directly to the <code>sampling_heatmap2</code> function. In both functions, the parameter sizes can be used to adjust the number of intervals to be displayed:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">sampling_heatmap2</span>(iraceResults<span class="op">$</span>allConfigurations, iraceResults<span class="op">$</span>parameters, </a>
+<a class="sourceLine" id="cb14-2" title="2">                  <span class="dt">param_names =</span> <span class="kw">c</span>(<span class="st">&quot;localsearch&quot;</span>,<span class="st">&quot;nnls&quot;</span>), <span class="dt">sizes=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">5</span>))</a></code></pre></div>
+<p>For more details of these functions, check the documentation of the functions and the <a href="https://auto-optimization.github.io/iraceplot/">user guide</a>.</p>
+</div>
+<div id="visualizing-sampling-distance" class="section level2">
+<h2>Visualizing sampling distance</h2>
+<p>You may like to have a general overview of the distance of the configurations sampled across the configuration process. This can allow you to assess the convergence of the configuration process. Use the <code>sampling_distance</code> function to display the mean distance of the configurations across the iterations of the configuration process:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">sampling_distance</span>(iraceResults, <span class="dt">t=</span><span class="fl">0.05</span>)</a></code></pre></div>
+<p>Numerical parameter distance can be adjusted with a treshold (<code>t=0.05</code>), check the documentation of the function and the <a href="https://auto-optimization.github.io/iraceplot/">user guide</a> for details.</p>
+</div>
+<div id="visualizing-test-performance" class="section level2">
+<h2>Visualizing test performance</h2>
+<p>The test performance of the best final configurations can be visualized using the <code>boxplot_test</code> function.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1"><span class="kw">boxplot_test</span>(iraceResults, <span class="dt">type=</span><span class="st">&quot;best&quot;</span>)</a></code></pre></div>
+<p>Note that the irace execution log includes test data (test is not enabled by default), check the irace package <a href="https://CRAN.R-project.org/package=irace/vignettes/irace-package.pdf">user guide</a> for details on how to use the test feature in irace.</p>
+<p>To investigate the difference in the performance of two configurations the <code>scatter_test</code> function displays the performance of both configurations paired by instance (each point represents an instance):</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1"><span class="kw">scatter_test</span>(iraceResults, <span class="dt">x_id =</span> <span class="dv">808</span>, <span class="dt">y_id =</span> <span class="dv">809</span>, <span class="dt">interactive=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+</div>
+<div id="visualizing-training-performance" class="section level2">
+<h2>Visualizing training performance</h2>
+<p>Visualizing training performance might help to obtain insights about the reasoning that followed irace when searching the parameter space, and thus it can be used to understand why irace considers certain configurations as high or low performing.</p>
+<p>To visualize the performance of the final elites observed by irace, the <code>boxplot_training</code> function plots the experiments performed on these configurations. Note that this data corresponds to the performance generated during the configuration process thus, the number of instances on which the configurations were evaluated might vary between elite configurations.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1"><span class="kw">boxplot_training</span>(iraceResults)</a></code></pre></div>
+<p>To observe the difference in the performance of two configurations you can also generate a scatter plot using the <code>scatter_training</code> function:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1"><span class="kw">scatter_training</span>(iraceResults, <span class="dt">x_id =</span> <span class="dv">808</span>, <span class="dt">y_id =</span> <span class="dv">809</span>, <span class="dt">interactive=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+</div>
+<div id="visualizing-performance-general-purpose" class="section level2">
+<h2>Visualizing performance (general purpose)</h2>
+<p>To plot the performance of a selected set of configurations in an experiment matrix, you can use the <code>boxplot_performance</code> function. The configurations can be selected in a vector or a list (allElites):</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1"><span class="kw">boxplot_performance</span>(iraceResults<span class="op">$</span>experiments, <span class="dt">allElites=</span><span class="kw">list</span>(<span class="kw">c</span>(<span class="dv">803</span>,<span class="dv">808</span>), <span class="kw">c</span>(<span class="dv">809</span>,<span class="dv">800</span>)), <span class="dt">first_is_best =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p>In the same way, you can use the <code>scatter_perfomance</code> function to plot the difference between configurations:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1"><span class="kw">scatter_performance</span>(iraceResults<span class="op">$</span>experiments, <span class="dt">x_id =</span> <span class="dv">83</span>, <span class="dt">y_id =</span> <span class="dv">809</span>, <span class="dt">interactive=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<p>Note that there these functions can be adjusted to display differently the configurations (i.e. include or not instancs). Check the package <a href="https://auto-optimization.github.io/iraceplot/">user guide</a> and the documentation of each function for details.</p>
+</div>
+<div id="visualizing-the-configuration-process" class="section level2">
+<h2>Visualizing the configuration process</h2>
+<p>In some cases, it might be interesting have a general visualization for the configuration process. This can be obtained with the <code>plot_experiments_matrix</code> function:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1"><span class="kw">plot_experiments_matrix</span>(iraceResults, <span class="dt">interactive =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p>The sampling distributions used by irace during the configuration process can be displayed using the <code>plot_model</code> function. For categorical parameters, this function displays the sampling probabilities associated to each parameter value by iteration (x axis top) in each elite configuration model (bars):</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1"><span class="kw">plot_model</span>(iraceResults, <span class="dt">param_name=</span><span class="st">&quot;algorithm&quot;</span>)</a></code></pre></div>
+<p>For numerical parameters, this function shows the sampling distributions associated to each parameter. These plots display the the density function of the truncated normal distribution associated to the models of each elite configuration in each instance:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1"><span class="kw">plot_model</span>(iraceResults, <span class="dt">param_name=</span><span class="st">&quot;alpha&quot;</span>)</a></code></pre></div>
+</div>
+</div>
+<div id="report" class="section level1">
+<h1>Report</h1>
+<p>The <code>report</code> function generates an HTML report with a summary of the configuration process executed by irace. The function will create an HTML file in the path provided in the <code>filename</code> argument and appending the <code>&quot;.html&quot;</code> extension to it.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1"><span class="kw">report</span>(iraceResults, <span class="dt">filename=</span><span class="st">&quot;report&quot;</span>)</a></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+---
+title: "Example report provided by iraceplot package"
+output: 
+  html_document:
+    toc: true
+---
+
+```{r, echo=FALSE, results='asis'}
+irace_results <- irace::read_logfile(system.file(package="iraceplot", "exdata", "guide-example.Rdata", mustWork = TRUE))
+interactive_plots <- TRUE
+res <- knitr::knit_child(system.file("template", "report_html.Rmd", package="iraceplot"), quiet = TRUE)
+cat(res, sep = '\n')
+```
+
