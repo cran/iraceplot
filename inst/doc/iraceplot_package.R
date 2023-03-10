@@ -4,15 +4,6 @@ library(iraceplot, quietly = TRUE)
 library(plotly)
 iraceResults <- read_logfile(system.file(package="iraceplot", "exdata", "guide-example.Rdata", mustWork = TRUE))
 
-## ----eval=FALSE---------------------------------------------------------------
-#  library(iraceplot)
-
-## ----eval=FALSE---------------------------------------------------------------
-#  iraceResults <- irace::read_logfile("~/path/to/irace.Rdata")
-
-## ----fig.align="center", fig.width=7, eval=FALSE------------------------------
-#  boxplot_test(iraceResults, type="best")
-
 ## ----fig.align="center", fig.width= 7, message=FALSE, prompt=FALSE, eval=FALSE----
 #  parallel_coord(iraceResults)
 
