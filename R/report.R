@@ -28,14 +28,20 @@
 #' }
 #' @export
 report <- function(irace_results, filename = "report",
-                   sections = list(experiments_matrix = NULL),
+                   sections = list(experiments_matrix = NULL, convergence = FALSE),
                    interactive = base::interactive())
 {
   if (missing(irace_results)) stop("irace_results is required")
+  # render() already checks this but the error is not clear enough.
+  if (! rmarkdown::pandoc_available("1.12.3", error = FALSE))
+    stop("pandoc version 1.12.3 or higher is required and was not found. ",
+         "You can install the RStudio IDE, which has bundled a version of Pandoc. ",
+         "Otherwise, follow the instructions at https://pandoc.org/installing.html .")
+  
   irace_results <- irace::read_logfile(irace_results)
 
   # Large experiments matrix crashes pandoc.
-  if (is.null(sections$experiments_matrix)) {
+  if (is.null(sections$experiments_matrix) || is.na(sections$experiments_matrix)) {
     sections$experiments_matrix <- (prod(dim(irace_results$experiments)) < 128L*1024L)
     if (!sections$experiments_matrix)
       iraceplot_warn("Race overview disable because the experiments matrix",

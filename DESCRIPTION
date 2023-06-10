@@ -1,6 +1,6 @@
 Package: iraceplot
 Title: Plots for Visualizing the Data Produced by the 'irace' Package
-Version: 1.1
+Version: 1.2
 Authors@R: c(person("Manuel", "López-Ibáñez", role = c("aut", "cre"),
                     email = "manuel.lopez-ibanez@manchester.ac.uk",
                     comment = c(ORCID = "0000-0001-9974-1295")),
@@ -25,11 +25,11 @@ URL: https://auto-optimization.github.io/iraceplot/,
 BugReports: https://github.com/auto-optimization/iraceplot/issues
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2023-03-10 19:14:01 UTC; manu
+Packaged: 2023-06-10 12:32:52 UTC; manu
 Author: Manuel López-Ibáñez [aut, cre]
     (<https://orcid.org/0000-0001-9974-1295>),
   Pablo Oñate Marín [aut],
   Leslie Pérez Cáceres [aut] (<https://orcid.org/0000-0001-5553-6150>)
 Maintainer: Manuel López-Ibáñez <manuel.lopez-ibanez@manchester.ac.uk>
 Repository: CRAN
-Date/Publication: 2023-03-10 20:00:02 UTC
+Date/Publication: 2023-06-10 12:50:02 UTC
