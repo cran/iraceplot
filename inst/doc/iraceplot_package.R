@@ -9,7 +9,7 @@ iraceResults <- read_logfile(system.file(package="iraceplot", "exdata", "guide-e
 
 ## ----fig.align="center", fig.width= 7, message=FALSE, prompt=FALSE, eval=FALSE----
 #  all_elite <- iraceResults$allConfigurations[unlist(iraceResults$allElites),]
-#  parallel_coord2(all_elite, iraceResults$parameters)
+#  plot_configurations(all_elite, iraceResults$parameters)
 
 ## ----fig.align="center", fig.width= 7, fig.height=6, message=FALSE, prompt=FALSE, eval=FALSE----
 #  parallel_cat(irace_results = iraceResults,
