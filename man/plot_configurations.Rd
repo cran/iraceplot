@@ -38,18 +38,20 @@ selected data.
 }
 \details{
 To export the plot to a file, it is possible to do it so manually using the
-functionality provided by plotly in the plot. If a filename is provided,
-orca server will be used to export the plots and thus, it requires the library
-to be installed (\url{https://github.com/plotly/orca}).
+functionality provided by \code{plotly}
+(\url{https://plotly-r.com/exporting-static-images}). If a filename is provided,
+orca server will be used to export the plots and thus, it requires the
+library to be installed (\url{https://github.com/plotly/orca}).
 }
 \examples{
 iraceResults <- read_logfile(system.file(package="irace", "exdata",
                                          "irace-acotsp.Rdata", mustWork = TRUE))
+parameters <- iraceResults$scenario$parameters
 plot_configurations(iraceResults$allConfigurations[iraceResults$iterationElites,], 
-                iraceResults$parameters)
+                parameters = parameters)
 plot_configurations(iraceResults$allConfigurations[iraceResults$iterationElites,], 
-                iraceResults$parameters, 
+                parameters = parameters,
                 param_names = c("algorithm", "alpha", "rho", "q0", "rasrank"))
 plot_configurations(iraceResults$allConfigurations[iraceResults$iterationElites,], 
-                iraceResults$parameters, by_n_param = 5)
+                parameters = parameters, by_n_param = 5)
 }

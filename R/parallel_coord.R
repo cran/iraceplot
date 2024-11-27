@@ -15,10 +15,10 @@
 #' to display the selected data.
 #' 
 #' To export the plot to a file, it is possible to do it so manually using the
-#' functionality provided by [plotly] in the plot. If a filename is provided,  
-#' an orca server will be used to export the plots and thus, it requires the library
-#' to be installed (<https://github.com/plotly/orca>).
-#' 
+#' functionality provided by `plotly`
+#' (<https://plotly-r.com/exporting-static-images>). If a filename is provided,
+#' orca server will be used to export the plots and thus, it requires the
+#' library to be installed (<https://github.com/plotly/orca>).
 #'
 #' @template arg_irace_results
 #' @template arg_id_configurations
@@ -61,48 +61,41 @@ parallel_coord <- function(irace_results, id_configurations = NULL, param_names 
                            iterations = NULL, only_elite = TRUE, by_n_param = NULL, 
                            color_by_instances = TRUE, filename = NULL)
 {
-  # Silence CRAN warnings
-  configuration <- ieration <- .ID. <- .ITERATION. <- NULL
+  configuration <- iteration <- .ID. <- .ITERATION. <- NULL # Silence CRAN warnings
   # Check iterations
-  if (!is.null(iterations)) {
-    it <- seq_along(irace_results$allElites)
-    if (any(iterations %not_in% it)) {
-      cli_abort("The iterations entered are outside the possible range")
-    }
-  } else {
+  if (is.null(iterations)) {
     iterations <- length(irace_results$allElites)
-    if (length(irace_results$allElites[[length(irace_results$allElites)]]) == 1L) {
-      cli_alert_info("Note: The final iteration only has one elite configuration\n")
-    }
-  } 
+  } else if (any(iterations %not_in% seq_along(irace_results$allElites))) {
+    cli_abort("The iterations entered are outside the possible range")
+  }
 
+  config_iter <- irace_results$state$experiment_log[, c("iteration", "configuration")]
   # Check configurations
   if (is.null(id_configurations)) {
-    if (only_elite) {
-      id_configurations <- irace_results$allElites[iterations]
-    } else {
-      id_configurations <- irace_results$experimentLog[irace_results$experimentLog[,"iteration"] %in% iterations, "configuration"]
-    }
+    id_configurations <- if (only_elite)
+                           irace_results$allElites[iterations] else
+                                                                 config_iter[iteration %in% iterations, configuration]
   } else {
     # FIXME: This overrides the above setting of iterations!
     iterations <- seq_along(irace_results$allElites)
   }
 
-  id_configurations <- unique(as.character(unlist(id_configurations)))
-  if (length(id_configurations) <= 1L) {
-    stop("You must provide more than one configuration ID")
+  id_configurations <- as.character(unique(unlist(id_configurations)))
+  if (length(id_configurations) == 0L) {
+    cli_abort("Must provide at least one configuration")
+    return(NULL)
   }
-  if (any(id_configurations %not_in% irace_results$allConfigurations[, ".ID."])) {
+  if (any(id_configurations %not_in% irace_results$allConfigurations[[".ID."]])) {
     stop("Unknown configuration IDs: ", paste0(setdiff(id_configurations, irace_results$allConfigurations[, ".ID."]), collapse=", "))
   }
 
   # Select data
   # FIXME: Use dplyr for all these operations.
-  data <- irace_results$allConfigurations[irace_results$allConfigurations[, ".ID."] %in% id_configurations, , drop=FALSE]
-  config_iter <- unique(irace_results$experimentLog[, c("iteration", "configuration")])
-  colnames(config_iter) <- c(".ITERATION.", ".ID.")
-  config_iter <- config_iter[(config_iter[, ".ID."] %in% id_configurations)
-    & (config_iter[, ".ITERATION."] %in% iterations), ,drop=FALSE]
+  data <- irace_results$allConfigurations[irace_results$allConfigurations[[".ID."]] %in% id_configurations, , drop=FALSE]
+  config_iter <- unique(config_iter)
+  setnames(config_iter, c("iteration", "configuration"), c(".ITERATION.", ".ID."))
+  config_iter <- config_iter[(config_iter[[".ID."]] %in% id_configurations)
+    & (config_iter[[".ITERATION."]] %in% iterations), ]
   
   experiments <- irace_results$experiments[,as.character(id_configurations),drop=FALSE]
   # FIXME: It says fitness but this is not really fitness. There should be an option to color according to mean fitness value
@@ -110,7 +103,7 @@ parallel_coord <- function(irace_results, id_configurations = NULL, param_names 
   # Merge iteration and configuration data
   data <- merge(config_iter, data, by=".ID.")
   # Merge fitness measure
-  data[,".FITNESS."] <- fitness[as.character(data[,".ID."])]
+  set(data, j = ".FITNESS.", value = fitness[as.character(data[[".ID."]])])
 
   # iteration-based plot focused on sampling (first iteration is selected)
   data <- as.data.frame(data %>% group_by(.ID.) %>% slice(which.min(.ITERATION.)))
@@ -140,8 +133,8 @@ parallel_coord <- function(irace_results, id_configurations = NULL, param_names 
     } else if (pname == ".FITNESS.") {
       return(NULL)
     }
-    domain <- parameters$domain[[pname]]
-    ptype <- parameters$types[pname]
+    domain <- parameters$domains[[pname]]
+    ptype <- parameters$types[[pname]]
     if (ptype %in% c("c", "o")) {
           values <- as.character(values)
       ticktext <- as.character(domain)
@@ -182,7 +175,7 @@ parallel_coord <- function(irace_results, id_configurations = NULL, param_names 
       values = values)
   }
 
-  parameters <- irace_results$parameters
+  parameters <- irace_results$scenario$parameters
   param_names <- subset_param_names(param_names, parameters$names, parameters$isFixed)
   # Verify that param_names contains more than one parameter
   if (length(param_names) < 2L)
@@ -202,22 +195,27 @@ parallel_coord <- function(irace_results, id_configurations = NULL, param_names 
       param_names <- c()
     }
 
+    cdata <- data[,c(".ID.", params, ".FITNESS.", ".ITERATION."), drop=FALSE]
+    # plotly cannot plot a single configuration due to bug https://github.com/plotly/plotly.R/issues/2385 so duplicate it
+    if (nrow(cdata) == 1L)
+      cdata <- rbind(cdata, cdata)
     # FIXME: If we pass the data to the plot we do not need to pass it to the
     # dimensions. It is enough to pass the column name: https://plotly.com/r/parallel-coordinates-plot/
-    cdata <- data[,c(".ID.", params, ".FITNESS.", ".ITERATION."), drop=FALSE]
+    # We should fix the values directly in cdata, then build the list with values = str2lang(paste0("~I(", name, ")"))
     dimensions <- lapply(colnames(cdata), get_dimensions)
-    
+    cminmax <- if (color_by_instances) range(data[[".FITNESS."]]) else c(1L, length(irace_results$allElites))
+    if (cminmax[1L] >= cminmax[2L])
+      cminmax[2L] <- cminmax[2L] + 1
     # plot creation
-    p <- plotly::plot_ly(cdata) %>%
-      plotly::add_trace(type = "parcoords",
+    p <- plotly::plot_ly(cdata, type = "parcoords",
         line = list(
-          color = if (color_by_instances) ~.FITNESS. else ~.ITERATION.,
+          color = if (color_by_instances) ~I(.FITNESS.) else ~I(.ITERATION.),
           colorscale = "Viridis",
           colorbar = list(title = list(text= if (color_by_instances) "Instances" else "Iteration")),
           showscale = TRUE,
           reversescale = TRUE,
-          cmin = if (color_by_instances) min(data[,".FITNESS."]) else 1L,
-          cmax = if (color_by_instances) max(data[,".FITNESS."]) else length(irace_results$allElites)),
+          cmin = cminmax[1L],
+          cmax = cminmax[2L]),
         dimensions = dimensions,
         labelangle = -25)
     plot_list[[i]] <- p
@@ -241,9 +239,10 @@ parallel_coord <- function(irace_results, id_configurations = NULL, param_names 
 #' selected data.
 #' 
 #' To export the plot to a file, it is possible to do it so manually using the
-#' functionality provided by plotly in the plot. If a filename is provided,  
-#' orca server will be used to export the plots and thus, it requires the library
-#' to be installed (<https://github.com/plotly/orca>).
+#' functionality provided by `plotly`
+#' (<https://plotly-r.com/exporting-static-images>). If a filename is provided,
+#' orca server will be used to export the plots and thus, it requires the
+#' library to be installed (<https://github.com/plotly/orca>).
 #' 
 #'
 #' @param configurations
@@ -266,13 +265,14 @@ parallel_coord <- function(irace_results, id_configurations = NULL, param_names 
 #' @examples
 #' iraceResults <- read_logfile(system.file(package="irace", "exdata",
 #'                                          "irace-acotsp.Rdata", mustWork = TRUE))
+#' parameters <- iraceResults$scenario$parameters
 #' plot_configurations(iraceResults$allConfigurations[iraceResults$iterationElites,], 
-#'                 iraceResults$parameters)
+#'                 parameters = parameters)
 #' plot_configurations(iraceResults$allConfigurations[iraceResults$iterationElites,], 
-#'                 iraceResults$parameters, 
+#'                 parameters = parameters,
 #'                 param_names = c("algorithm", "alpha", "rho", "q0", "rasrank"))
 #' plot_configurations(iraceResults$allConfigurations[iraceResults$iterationElites,], 
-#'                 iraceResults$parameters, by_n_param = 5)
+#'                 parameters = parameters, by_n_param = 5)
 #' @export
 #' @md
 plot_configurations <- function(configurations, parameters, param_names = parameters$names,
@@ -283,7 +283,7 @@ plot_configurations <- function(configurations, parameters, param_names = parame
   get_dimensions <- function(pname) {
     values <- cdata[,pname]
     if (pname == ".ID.") return(NULL) # FIXME: Handle this!
-    domain <- parameters$domain[[pname]]
+    domain <- parameters$domains[[pname]]
     ptype <- parameters$types[pname]
     if (ptype %in% c("c", "o")) {
       values <- as.character(values)

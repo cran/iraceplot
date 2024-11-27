@@ -9,7 +9,7 @@ iraceResults <- read_logfile(system.file(package="iraceplot", "exdata", "guide-e
 
 ## ----fig.align="center", fig.width= 7, message=FALSE, prompt=FALSE, eval=FALSE----
 #  all_elite <- iraceResults$allConfigurations[unlist(iraceResults$allElites),]
-#  plot_configurations(all_elite, iraceResults$parameters)
+#  plot_configurations(all_elite, iraceResults$scenario$parameters)
 
 ## ----fig.align="center", fig.width= 7, fig.height=6, message=FALSE, prompt=FALSE, eval=FALSE----
 #  parallel_cat(irace_results = iraceResults,
@@ -22,7 +22,7 @@ iraceResults <- read_logfile(system.file(package="iraceplot", "exdata", "guide-e
 #   sampling_frequency(iraceResults, param_names = c("beta"))
 
 ## ----fig.align="center", fig.width= 7, fig.height=7, message=FALSE, prompt=FALSE, eval=FALSE----
-#   sampling_frequency(iraceResults$allConfigurations, iraceResults$parameters, param_names = c("alpha"))
+#   sampling_frequency(iraceResults$allConfigurations, iraceResults$scenario$parameters, param_names = c("alpha"))
 
 ## ----fig.align="center", fig.width= 7, fig.height=6, eval=FALSE---------------
 #  sampling_frequency_iteration(iraceResults, param_name = "beta")
@@ -31,7 +31,7 @@ iraceResults <- read_logfile(system.file(package="iraceplot", "exdata", "guide-e
 #  sampling_heatmap(iraceResults, param_names = c("beta","alpha"))
 
 ## ----fig.align="center", fig.width= 7, fig.height=6, eval=FALSE---------------
-#  sampling_heatmap2(iraceResults$allConfigurations, iraceResults$parameters,
+#  sampling_heatmap2(iraceResults$allConfigurations, iraceResults$scenario$parameters,
 #                    param_names = c("localsearch","nnls"), sizes=c(0,5))
 
 ## ----fig.align="center", fig.width= 7, eval=FALSE-----------------------------
